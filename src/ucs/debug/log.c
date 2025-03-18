@@ -395,7 +395,7 @@ void ucs_log_dispatch(const char *file, unsigned line, const char *function,
     va_list ap;
     void *stack[128];
     int depth;
-    char full_msg[10240];
+    char *full_msg;
     char **symbols;
     char *p, *q;
     int i;
@@ -407,7 +407,7 @@ void ucs_log_dispatch(const char *file, unsigned line, const char *function,
     if (depth < 0) {
         depth = 0;
     }
-    full_msg[0] = 0;
+    full_msg = calloc(4096, 1);
     symbols = backtrace_symbols(stack, depth);
     if (symbols) {
         for (i = 0; i < depth - 1; i++) {
@@ -439,6 +439,7 @@ void ucs_log_dispatch(const char *file, unsigned line, const char *function,
                                    level, comp_conf, full_msg, ap);
         va_end(ap);
     }
+    free(full_msg);
 }
 
 void ucs_log_fatal_error(const char *format, ...)

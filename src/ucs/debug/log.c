@@ -411,6 +411,8 @@ void ucs_log_dispatch(const char *file, unsigned line, const char *function,
     symbols = backtrace_symbols(stack, depth);
     if (symbols) {
         for (i = 0; i < depth - 1; i++) {
+            if (!symbols[i])
+                continue;
             p = strchr(symbols[i], '(');
             if (!p)
                 continue;

@@ -418,10 +418,13 @@ void ucs_log_dispatch(const char *file, unsigned line, const char *function,
                 continue;
             p++;
             q = strchr(p, '+');
-            if (q)
+            if (q) {
                 *q = 0;
-            strcat(full_msg, p);
-            strcat(full_msg, " ");
+                if (p[0] == '_')
+                    continue;
+                strcat(full_msg, p);
+                strcat(full_msg, " ");
+            }
         }
     }
     free(symbols);

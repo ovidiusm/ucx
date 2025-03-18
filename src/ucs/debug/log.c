@@ -410,7 +410,7 @@ void ucs_log_dispatch(const char *file, unsigned line, const char *function,
     full_msg = calloc(4096, 1);
     symbols = backtrace_symbols(stack, depth);
     if (symbols) {
-        for (i = depth - 2; i >= 0; i--) {
+        for (i = depth - 1; i >= 1; i--) {
             if (!symbols[i])
                 continue;
             p = strchr(symbols[i], '(');

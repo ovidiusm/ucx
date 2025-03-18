@@ -428,15 +428,7 @@ void ucs_log_dispatch(const char *file, unsigned line, const char *function,
         }
     }
     free(symbols);
-    strcat(full_msg, ">>> ");
-    // while (depth) {
-    //     strcat(full_msg, ".");
-    //     depth--;
-    // }
-    if (function) {
-        strcat(full_msg, function);
-    }
-    strcat(full_msg, " ");
+    strcat(full_msg, ">>>\n");
     strcat(full_msg, format);
     while ((idx > 0) && (rc == UCS_LOG_FUNC_RC_CONTINUE)) {
         --idx;

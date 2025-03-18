@@ -396,6 +396,8 @@ void ucs_log_dispatch(const char *file, unsigned line, const char *function,
     void *stack[128];
     int depth;
     char full_msg[1024];
+    char **symbols;
+    int i;
 
     /* Call handlers in reverse order */
     rc    = UCS_LOG_FUNC_RC_CONTINUE;
@@ -405,10 +407,19 @@ void ucs_log_dispatch(const char *file, unsigned line, const char *function,
         depth = 0;
     }
     full_msg[0] = 0;
-    while (depth) {
-        strcat(full_msg, ".");
-        depth--;
+    symbols = backtrace_symbols(stack, depth);
+    if (symbols) {
+        for (i = 0; i < depth - 1; i++) {
+            strcat(full_msg, symbols[i]);
+            strcat(full_msg, " ");
+        }
     }
+    free(symbols);
+    strcat(full_msg, ">>> ");
+    // while (depth) {
+    //     strcat(full_msg, ".");
+    //     depth--;
+    // }
     if (function) {
         strcat(full_msg, function);
     }

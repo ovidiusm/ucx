@@ -21,7 +21,7 @@
 #include <ucs/type/spinlock.h>
 #include <ucs/config/parser.h>
 #include <fnmatch.h>
-
+#include <execinfo.h>
 
 #define UCS_MAX_LOG_HANDLERS    32
 

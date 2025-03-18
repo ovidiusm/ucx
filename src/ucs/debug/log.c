@@ -416,7 +416,7 @@ void ucs_log_dispatch(const char *file, unsigned line, const char *function,
             p = strchr(symbols[i], '(');
             if (!p)
                 continue;
-                p++;
+            p++;
             q = strchr(p, '+');
             if (q)
                 *q = 0;

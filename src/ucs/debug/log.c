@@ -393,15 +393,32 @@ void ucs_log_dispatch(const char *file, unsigned line, const char *function,
     ucs_log_func_rc_t rc;
     unsigned idx;
     va_list ap;
+    void *stack[128];
+    int depth;
+    char full_msg[1024];
 
     /* Call handlers in reverse order */
     rc    = UCS_LOG_FUNC_RC_CONTINUE;
     idx = ucs_log_handlers_count;
+    depth = backtrace(stack, 128);
+    if (depth < 0) {
+        depth = 0;
+    }
+    full_msg[0] = 0;
+    while (depth) {
+        strcat(full_msg, ".");
+        depth--;
+    }
+    if (function) {
+        strcat(full_msg, function);
+    }
+    strcat(full_msg, " ");
+    strcat(full_msg, format);
     while ((idx > 0) && (rc == UCS_LOG_FUNC_RC_CONTINUE)) {
         --idx;
         va_start(ap, format);
         rc = ucs_log_handlers[idx](file, line, function,
-                                   level, comp_conf, format, ap);
+                                   level, comp_conf, full_msg, ap);
         va_end(ap);
     }
 }

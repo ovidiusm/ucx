@@ -469,6 +469,7 @@ ucs_status_t uct_ib_reg_mr(uct_ib_md_t *md, void *address, size_t length,
     struct ibv_mr *mr;
     uint64_t flags;
     int dmabuf_fd;
+    static int count = 0;
 
     flags         = UCT_MD_MEM_REG_FIELD_VALUE(params, flags, FIELD_FLAGS, 0);
     dmabuf_fd     = UCS_PARAM_VALUE(UCT_MD_MEM_REG_FIELD, params, dmabuf_fd,
@@ -510,7 +511,9 @@ ucs_status_t uct_ib_reg_mr(uct_ib_md_t *md, void *address, size_t length,
                                         flags & UCT_MD_MEM_FLAG_HIDE_ERRORS);
         return UCS_ERR_IO_ERROR;
     }
-
+    
+    count++;
+    ucs_error("ibv_reg_mr %d", count);
     ucs_trace("%s(pd=%p addr=%p len=%zu fd=%d offset=%zu access=0x%" PRIx64 "):"
               " mr=%p lkey=0x%x retry=%lu took %.3f ms",
               title, md->pd, address, length, dmabuf_fd, dmabuf_offset,

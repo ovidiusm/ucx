@@ -408,6 +408,7 @@ void ucs_log_dispatch(const char *file, unsigned line, const char *function,
         depth = 0;
     }
     full_msg = calloc(4096, 1);
+    strcat(full_msg, "STACK: ");
     symbols = backtrace_symbols(stack, depth);
     if (symbols) {
         for (i = depth - 1; i >= 1; i--) {

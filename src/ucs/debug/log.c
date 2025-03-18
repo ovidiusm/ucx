@@ -420,7 +420,7 @@ void ucs_log_dispatch(const char *file, unsigned line, const char *function,
             q = strchr(p, '+');
             if (q) {
                 *q = 0;
-                if (p[0] == '_')
+                if (p[0] == '_' || p[0] == ' ' || !p[0])
                     continue;
                 strcat(full_msg, p);
                 strcat(full_msg, " ");

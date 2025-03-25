@@ -58,7 +58,7 @@ ucp_memh_get(ucp_context_h context, void *address, size_t length,
         rregion = UCS_PROFILE_CALL(ucs_rcache_lookup_unsafe, context->rcache,
                                    address, length, 1, PROT_READ | PROT_WRITE);
         if (rregion == NULL) {
-            ucs_warn("MEM REGION NOT IN RCACHE");
+            ucs_warn("MEM REGION NOT FOUND IN RCACHE AT ALL");
             goto not_found;
         }
 
@@ -70,6 +70,8 @@ ucp_memh_get(ucp_context_h context, void *address, size_t length,
             ucp_memh_rcache_print(memh, address, length);
             *memh_p = memh;
             UCP_THREAD_CS_EXIT(&context->mt_lock);
+            ucs_warn("MEM REGION FOUND IN RCACHE OK :) :) :) :) :) :) FLAGs: cached md_map=%lx req=%lx, cached uct=%x req=%x",
+                memh->md_map, reg_md_map, memh->uct_flags, UCP_MM_UCT_ACCESS_FLAGS(uct_flags));
             return UCS_OK;
         }
         ucs_warn("MEM REGION FLAGS IN RCACHE FLAG MISMATCH: cached md_map=%lx req=%lx, cached uct=%x req=%x",

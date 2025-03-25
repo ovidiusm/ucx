@@ -72,7 +72,7 @@ ucp_memh_get(ucp_context_h context, void *address, size_t length,
             UCP_THREAD_CS_EXIT(&context->mt_lock);
             return UCS_OK;
         }
-        ucs_warn("MEM REGION FLAGS IN RCACHE FLAG MISMATCH: cached md_map=%lx req=%lx, cached uct=%lx req=%x",
+        ucs_warn("MEM REGION FLAGS IN RCACHE FLAG MISMATCH: cached md_map=%lx req=%lx, cached uct=%x req=%x",
                  memh->md_map, reg_md_map, memh->uct_flags, UCP_MM_UCT_ACCESS_FLAGS(uct_flags));
 
         ucs_rcache_region_put_unsafe(context->rcache, rregion);

@@ -79,6 +79,7 @@ ucp_memh_get(ucp_context_h context, void *address, size_t length,
         ucs_rcache_region_put_unsafe(context->rcache, rregion);
 not_found:
         UCP_THREAD_CS_EXIT(&context->mt_lock);
+        ucs_warn("MEMH NOT FOUND IN RCACHE");
     }
 
     return ucp_memh_get_slow(context, address, length, mem_type, reg_md_map,

@@ -44,10 +44,6 @@ ucp_memh_get(ucp_context_h context, void *address, size_t length,
     ucs_rcache_region_t *rregion;
     ucp_mem_h memh;
 
-    if (reg_md_map == 0x30) {
-        reg_md_map = 0x10;
-    }
-
     if (length == 0) {
         ucs_assert(ucp_memh_address(&ucp_mem_dummy_handle.memh) == NULL);
         ucs_assert(ucp_memh_length(&ucp_mem_dummy_handle.memh) == 0);
@@ -62,6 +58,7 @@ ucp_memh_get(ucp_context_h context, void *address, size_t length,
         rregion = UCS_PROFILE_CALL(ucs_rcache_lookup_unsafe, context->rcache,
                                    address, length, 1, PROT_READ | PROT_WRITE);
         if (rregion == NULL) {
+            ucs_warn("MEM REGION NOT IN RCACHE");
             goto not_found;
         }
 
@@ -75,11 +72,13 @@ ucp_memh_get(ucp_context_h context, void *address, size_t length,
             UCP_THREAD_CS_EXIT(&context->mt_lock);
             return UCS_OK;
         }
+        ucs_warn("MEM REGION FLAGS IN RCACHE FLAG MISMATCH: cached md_map=%lx req=%lx, cached uct=%lx req=%lx",
+                 memh->md_map, reg_md_map, memh->uct_flags, UCP_MM_UCT_ACCESS_FLAGS(uct_flags));
 
         ucs_rcache_region_put_unsafe(context->rcache, rregion);
 not_found:
         UCP_THREAD_CS_EXIT(&context->mt_lock);
-        ucs_warn("MEMH NOT FOUND IN RCACHE");
+        ucs_warn("MEMH NOT TAKEN FROM RCACHE");
     }
 
     return ucp_memh_get_slow(context, address, length, mem_type, reg_md_map,

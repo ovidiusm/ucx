@@ -44,6 +44,10 @@ ucp_memh_get(ucp_context_h context, void *address, size_t length,
     ucs_rcache_region_t *rregion;
     ucp_mem_h memh;
 
+    if (reg_md_map == 0x30) {
+        reg_md_map = 0x10;
+    }
+
     if (length == 0) {
         ucs_assert(ucp_memh_address(&ucp_mem_dummy_handle.memh) == NULL);
         ucs_assert(ucp_memh_length(&ucp_mem_dummy_handle.memh) == 0);

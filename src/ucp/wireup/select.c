@@ -1567,10 +1567,10 @@ ucp_wireup_add_fast_lanes(ucp_worker_h worker,
         }
 
         ucs_trace(UCT_TL_RESOURCE_DESC_FMT
-            " : bandwidth %.2f not lower than %.2f x %.2f, not dropping lane",
+            " : bandwidth %.2f not lower than %.2f x %.2f, ratio is %.2f, not dropping lane",
             UCT_TL_RESOURCE_DESC_ARG(
                     &context->tl_rscs[sinfo->rsc_index].tl_rsc),
-            lane_bw, max_ratio, max_bw);
+            lane_bw, max_ratio, max_bw, lane_bw / MAX(1.0, max_bw));
 
         status = ucp_wireup_add_lane(select_params, sinfo, lane_type,
                                      num_lanes == 0, select_ctx);

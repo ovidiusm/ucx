@@ -645,6 +645,7 @@ ucp_proto_rndv_bulk_init(const ucp_proto_multi_init_params_t *init_params,
     }
 
     rpriv->frag_mem_type = init_params->super.reg_mem_info.type;
+    rpriv->frag_sys_dev  = init_params->super.reg_mem_info.sys_dev;
 
     if (rpriv->super.lane == UCP_NULL_LANE) {
         /* Add perf without ACK in case of pipeline */
@@ -734,7 +735,8 @@ UCS_PROFILE_FUNC(ucs_status_t, ucp_proto_rndv_send_reply,
          */
         status = ucp_ep_rkey_unpack_internal(
                   ep, rkey_buffer, rkey_length, ep_config->key.reachable_md_map,
-                  ep_config->rndv.proto_rndv_rkey_skip_mds, &rkey);
+                  ep_config->rndv.proto_rndv_rkey_skip_mds,
+                  req->send.state.dt_iter.mem_info.sys_dev, &rkey);
         if (status != UCS_OK) {
             goto err;
         }

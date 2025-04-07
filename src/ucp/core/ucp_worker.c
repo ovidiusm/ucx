@@ -2137,10 +2137,12 @@ static void
 ucp_worker_dump_rkey_config_key(ucs_string_buffer_t *log_strb,
                                 ucp_rkey_config_key_t *key)
 {
-    ucs_string_buffer_appendf(log_strb,
-        "md_map %"PRIx64 " cfg_index %d sys_dev %d mem_type %s unrch_md_map %"PRIx64"\n",
-        key->md_map, key->ep_cfg_index, key->sys_dev,
-        ucs_memory_type_names[key->mem_type], key->unreachable_md_map);
+    ucs_string_buffer_appendf(
+            log_strb,
+            "md_map %" PRIx64
+            " cfg_index %d sys_dev %d mem_type %s unrch_md_map %" PRIx64 "\n",
+            key->md_map, key->ep_cfg_index, key->sys_dev,
+            ucs_memory_type_names[key->mem_type], key->unreachable_md_map);
 }
 
 ucs_status_t
@@ -2486,6 +2488,7 @@ ucs_status_t ucp_worker_create(ucp_context_h context,
     worker->context              = context;
     worker->uuid                 = ucs_generate_uuid((uintptr_t)worker);
     worker->flush_ops_count      = 0;
+    worker->fence_seq            = 0;
     worker->inprogress           = 0;
     worker->rkey_config_count    = 0;
     worker->num_active_ifaces    = 0;

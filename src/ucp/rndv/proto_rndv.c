@@ -83,8 +83,8 @@ ucp_proto_rndv_ctrl_get_md_map(const ucp_proto_rndv_ctrl_init_params_t *params,
         *md_map |= UCS_BIT(md_index);
         
         if (strcmp(context->tl_mds[md_index].rsc.md_name, "cuda_ipc") == 0) {
-            cuda_md_map = UCS_BIT(md_index);
-            cuda_sys_dev_map = UCS_BIT(ep_sys_dev);
+            //cuda_md_map = UCS_BIT(md_index);
+            //cuda_sys_dev_map = UCS_BIT(ep_sys_dev);
         }
 
         if (ep_sys_dev >= UCP_MAX_SYS_DEVICES) {

@@ -30,6 +30,7 @@ ucp_proto_rndv_ctrl_get_md_map(const ucp_proto_rndv_ctrl_init_params_t *params,
     ucp_md_index_t md_index;
     ucp_lane_index_t lane;
     ucs_status_t status;
+    uint8_t found_cuda = 0, is_cuda;
 
     /* md_map is all lanes which support get_zcopy on the given mem_type and
      * require remote key
@@ -76,9 +77,24 @@ ucp_proto_rndv_ctrl_get_md_map(const ucp_proto_rndv_ctrl_init_params_t *params,
             continue;
         }
 
-        ucs_trace_req("lane[%d]: selected md %s index %u", lane,
-                      context->tl_mds[md_index].rsc.md_name, md_index);
+        if (context->config.ext.rndv_prefer_cuda_lanes) {
+            /* TODO: do this check without string comparison */
+            is_cuda = strstr(context->tl_mds[md_index].rsc.md_name, "cuda") != NULL;
+
+            if (is_cuda && !found_cuda) {
+                found_cuda = 1;
+                /* CUDA takes precedence over any other transports => reset md_map */
+                *md_map = 0;
+                *sys_dev_map = 0;
+            } else if (!is_cuda && found_cuda) {
+                /* If we already found a CUDA transport, ignore other transport types */
+                continue;
+            }
+        }
+
         *md_map |= UCS_BIT(md_index);
+        ucs_trace_req("lane[%d]: selected md %s index %u (md_map 0x%"PRIx64")", lane,
+            context->tl_mds[md_index].rsc.md_name, md_index, *md_map);
 
         if (ep_sys_dev >= UCP_MAX_SYS_DEVICES) {
             continue;

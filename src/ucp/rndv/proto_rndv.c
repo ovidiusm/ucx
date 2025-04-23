@@ -77,7 +77,7 @@ ucp_proto_rndv_ctrl_get_md_map(const ucp_proto_rndv_ctrl_init_params_t *params,
         }
 
         ucs_trace_req("lane[%d]: selected md %s index %u", lane,
-            context->tl_mds[md_index].rsc.md_name, md_index);
+                      context->tl_mds[md_index].rsc.md_name, md_index);
 
         *md_map |= UCS_BIT(md_index);
 
